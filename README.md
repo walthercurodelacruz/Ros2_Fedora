@@ -199,4 +199,4 @@ Abre tu editor de texto favorito y crea el archivo `~/rpmbuild/SPECS/ros2-jazzy.
 El archivo final se ubicará en `~/rpmbuild/RPMS/x86_64/`.
 
 ---
-*Mantenido por mí ([Walther Curo De La Cruz]) - Recibo con gusto contribuciones y reportes de errores en la sección de Issues.*
+*Recibo con gusto contribuciones y reportes de errores en la sección de Issues.*

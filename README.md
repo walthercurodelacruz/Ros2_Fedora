@@ -6,33 +6,45 @@
 [![ROS 2 Jazzy](https://img.shields.io/badge/ROS_2-Jazzy-22314E.svg)](https://docs.ros.org/en/jazzy/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-**Compilado y mantenido por:** [Walther Curo De La Cruz]
+**Compilado y mantenido por mí:** [Walther Curo De La Cruz]
 
-Este repositorio proporciona binarios precompilados estables y la guía definitiva de compilación desde cero para **ROS 2 Jazzy** en **Fedora 44**. 
+En este repositorio proporciono binarios precompilados estables y mi guía definitiva de compilación desde cero para **ROS 2 Jazzy** en **Fedora 44**. 
 
-Al ser Fedora un sistema operativo de Nivel 3 (Tier 3) para Open Robotics, no existen binarios oficiales. Este proyecto de ingeniería inversa y compilación resuelve las incompatibilidades generacionales con DNF5, el compilador moderno (CMake >= 3.30), el aislamiento de Python (PEP 668) y las políticas de seguridad estrictas de las macros RPM de Red Hat. El resultado es un *workspace* 100% funcional que incluye las interfaces gráficas completas como **RViz2** y **rqt**.
+Al ser Fedora un sistema operativo de Nivel 3 (Tier 3) para Open Robotics, no existen binarios oficiales. Con mi proyecto de ingeniería inversa y compilación resuelvo las incompatibilidades generacionales con DNF5, el compilador moderno (CMake >= 3.30), el aislamiento de Python (PEP 668) y las políticas de seguridad estrictas de las macros RPM de Red Hat. Mi resultado es un *workspace* 100% funcional que incluye las interfaces gráficas completas como **RViz2** y **rqt**.
+
+---
+
+## 🤖 ¿Qué es ROS 2 y para qué sirve?
+
+Para contextualizar el propósito de este proyecto, comparto un resumen sobre la importancia y el alcance de este framework en la robótica moderna:
+
+* **¿Qué es ROS 2?**: *Robot Operating System 2* (ROS 2) es el *middleware* estándar de código abierto diseñado para el desarrollo de software robótico. Aunque se le conoce como "sistema operativo", en realidad es un conjunto de librerías, herramientas y convenciones que permiten la comunicación entre procesos distribuidos mediante una arquitectura basada en DDS (*Data Distribution Service*).
+* **¿Para qué se usa?**: Permite abstraer la complejidad del hardware del robot y conectar componentes modulares (sensores como LIDAR o cámaras, actuadores, algoritmos de percepción, control, planificación de rutas e IA) utilizando un patrón de publicación/suscripción (*topics*), solicitudes/respuestas (*services*) y tareas de larga duración (*actions*).
+* **Aplicaciones**: Se aplica en el desarrollo de robótica móvil (AMRs), brazos manipuladores industriales, vehículos autónomos (autos y drones), robótica marina, médica y exploración espacial.
+* **Industria**: Empresas e instituciones líderes como **Boston Dynamics, Amazon Robotics, Toyota Research Institute, iRobot, John Deere y la NASA** utilizan ROS 2 en entornos de producción gracias a sus capacidades de comunicación segura, tiempo real y escalabilidad comercial.
+* **Educación e Investigación**: Es la plataforma principal de enseñanza en universidades y centros de investigación de todo el mundo para formar estudiantes y científicos en conceptos avanzados como navegación autónoma (SLAM), visión por computadora, cinemática y aprendizaje por refuerzo.
 
 ---
 
 ## 💻 Compatibilidad de Hardware
 
-Los binarios distribuidos en este repositorio fueron compilados bajo la arquitectura estándar `x86_64` con optimización genérica (`-mtune=generic`). 
+Los binarios que he distribuido en este repositorio los he compilado bajo la arquitectura estándar `x86_64` con optimización genérica (`-mtune=generic`). 
 
 * **Soportado:** Cualquier procesador de 64 bits de **Intel** (Core, Xeon, Pentium) o **AMD** (Ryzen, EPYC, Athlon) ejecutando Fedora 44.
-* **No soportado:** Arquitecturas ARM (`aarch64`), como Raspberry Pi o procesadores Apple Silicon. Para utilizar ROS 2 en estas plataformas, deberás seguir la Guía de Desarrolladores y compilar desde el código fuente.
+* **No soportado:** Arquitecturas ARM (`aarch64`), como Raspberry Pi o procesadores Apple Silicon. Para utilizar ROS 2 en estas plataformas, te sugiero seguir mi Guía de Desarrolladores y compilar desde el código fuente.
 
 ---
 
 ## 🚀 Instalación Rápida (Recomendado)
 
-Para los usuarios de Fedora 44, hemos empaquetado ROS 2 Jazzy en un archivo RPM nativo. Olvídate de compilar durante horas.
+Para los usuarios de Fedora 44, he empaquetado ROS 2 Jazzy en un archivo RPM nativo. Diseñé este paquete para que te olvides de compilar durante horas.
 
 **1. Descargar e Instalar:**
 Descarga el archivo `ros2-jazzy-1.0-1.fc44.x86_64.rpm` desde la sección **Releases** de este repositorio y ejecútalo con `dnf`. El gestor de paquetes se encargará de instalar automáticamente las dependencias necesarias.
 
     sudo dnf install ./ros2-jazzy-1.0-1.fc44.x86_64.rpm
 
-*(Alternativa: Si prefieres no instalarlo a nivel de sistema, puedes descargar el archivo `.tar.gz` de los Releases, extraerlo en una carpeta local e instalar las dependencias manualmente).*
+*(Alternativa: Si prefieres no instalarlo a nivel de sistema, puedes descargar el archivo `.tar.gz` de mis Releases, extraerlo en una carpeta local e instalar las dependencias manualmente).*
 
 **2. Activar ROS 2:**
 El framework se instala en el directorio estándar de la industria. Para usarlo en tu terminal actual, simplemente ejecuta:
@@ -58,12 +70,12 @@ También puedes verificar que la simulación 2D clásica responde sin problemas:
 
 ## 🛠️ Guía para Desarrolladores: Compilar y Empaquetar desde cero
 
-Si deseas auditar el código, aplicar modificaciones o replicar mi proceso de construcción en Fedora 44, aquí tienes la bitácora completa sorteando los obstáculos exclusivos de esta distribución. 
+Si deseas auditar mi código, aplicar modificaciones o replicar mi proceso de construcción en Fedora 44, aquí te comparto mi bitácora completa sorteando los obstáculos exclusivos de esta distribución. 
 
 > **Nota:** Copia y pega los comandos de los recuadros grises tal cual. Las explicaciones están fuera del código para evitar errores de sintaxis en tu terminal.
 
 ### Fase 1: Preparación del Entorno (DNF5 y PEP 668)
-Fedora restringe la instalación global de paquetes de Python (PEP 668). Usaremos un entorno virtual (`venv`) híbrido para aislar herramientas de ROS, pero permitiendo el acceso a las librerías del sistema operativo (vital para compilar Qt5).
+Fedora restringe la instalación global de paquetes de Python (PEP 668). En mi método utilizo un entorno virtual (`venv`) híbrido para aislar las herramientas de ROS, permitiendo el acceso a las librerías del sistema operativo (vital para compilar Qt5).
 
 **Actualizar el sistema e instalar herramientas base:**
 
@@ -89,14 +101,14 @@ Fedora restringe la instalación global de paquetes de Python (PEP 668). Usaremo
     rosdep update
 
 ### Fase 2: Descarga del Código Fuente
-Descargamos la versión LTS (Jazzy) utilizando el manifiesto oficial de Open Robotics:
+Descargo la versión LTS (Jazzy) utilizando el manifiesto oficial de Open Robotics:
 
     mkdir -p src
     wget https://raw.githubusercontent.com/ros2/ros2/jazzy/ros2.repos
     vcs import src < ros2.repos
 
 ### Fase 3: Resolución de Dependencias Nativas
-Instalaremos manualmente los puentes de Qt5 que confunden al diccionario de ROS en Red Hat, y excluiremos paquetes problemáticos (como implementaciones comerciales de DDS).
+Instalo manualmente los puentes de Qt5 que confunden al diccionario de ROS en Red Hat, y excluyo paquetes problemáticos (como implementaciones comerciales de DDS).
 
 **Proveer cabeceras y bindings de Qt directamente desde los repositorios de Fedora:**
 
@@ -107,7 +119,7 @@ Instalaremos manualmente los puentes de Qt5 que confunden al diccionario de ROS 
     rosdep install --from-paths src --ignore-src --rosdistro jazzy -y --skip-keys "rti-connext-dds-6.0.1 urdfdom_headers python3-flake8-docstrings"
 
 ### Fase 4: Parches de Compatibilidad CMake
-El compilador moderno de Fedora 44 rechaza directivas de CMake antiguas (`< 3.5`). Debemos inyectar políticas de retrocompatibilidad usando límites de palabra (`\b`).
+El compilador moderno de Fedora 44 rechaza directivas de CMake antiguas (`< 3.5`). En este paso inyecto políticas de retrocompatibilidad usando límites de palabra (`\b`).
 
 **Parchear Ogre3D (Dependencia crítica de RViz2):**
 
@@ -118,7 +130,7 @@ El compilador moderno de Fedora 44 rechaza directivas de CMake antiguas (`< 3.5`
     find src -type f -path "*/orocos_kdl_vendor/CMakeLists.txt" -exec sed -i 's/\bCMAKE_ARGS\b/CMAKE_ARGS "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"/g' {} +
 
 ### Fase 5: Inyección del Entorno RPM (El truco de PyQt5)
-Para que los conectores de C++ a Python (`qt_gui_cpp`) compilen exitosamente fuera de un script oficial `rpmbuild`, debemos emular las variables de empaquetado del sistema operativo:
+Para que los conectores de C++ a Python (`qt_gui_cpp`) compilen exitosamente fuera de un script oficial `rpmbuild`, descubrí que debemos emular las variables de empaquetado del sistema operativo:
 
     export RPM_ARCH=$(uname -m)
     export RPM_PACKAGE_NAME="ros2-jazzy"
@@ -127,7 +139,7 @@ Para que los conectores de C++ a Python (`qt_gui_cpp`) compilen exitosamente fue
     export RPM_OPT_FLAGS="-O2"
 
 ### Fase 6: Compilación Optimizada
-Lanzamos la compilación. Usamos `--merge-install` para crear una carpeta única (`install/`) fácil de distribuir, y aplicamos la política de CMake globalmente. *(Nota: Este proceso toma más de una hora dependiendo de tu hardware).*
+Lanzamos la compilación. Utilizo `--merge-install` para crear una carpeta única (`install/`) fácil de distribuir, y aplico la política de CMake globalmente. *(Nota: Este proceso toma más de una hora dependiendo de tu hardware).*
 
     colcon build --merge-install --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
@@ -136,7 +148,7 @@ Una vez finalizado, puedes crear el empaquetado portátil simple:
     tar -czvf ros2-jazzy-fedora44-x86_64.tar.gz install/
 
 ### Fase 7: Creación del Paquete RPM (Avanzado)
-Para integrar la compilación con el gestor de paquetes del sistema, debemos envolver la carpeta `install/` en un archivo `.rpm` sorteando las rigurosas inspecciones de seguridad (QA) de Fedora.
+Para integrar mi compilación con el gestor de paquetes del sistema, envolvemos la carpeta `install/` en un archivo `.rpm` sorteando las rigurosas inspecciones de seguridad (QA) de Fedora.
 
 **Instalar herramientas RPM e inicializar el árbol:**
 
@@ -187,4 +199,4 @@ Abre tu editor de texto favorito y crea el archivo `~/rpmbuild/SPECS/ros2-jazzy.
 El archivo final se ubicará en `~/rpmbuild/RPMS/x86_64/`.
 
 ---
-*Mantenido por [Walther Curo De La Cruz] - Contribuciones y reportes de errores son bienvenidos en la sección de Issues.*
+*Mantenido por mí ([Walther Curo De La Cruz]) - Recibo con gusto contribuciones y reportes de errores en la sección de Issues.*

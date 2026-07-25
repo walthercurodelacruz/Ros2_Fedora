@@ -6,7 +6,7 @@
 [![ROS 2 Jazzy](https://img.shields.io/badge/ROS_2-Jazzy-22314E.svg)](https://docs.ros.org/en/jazzy/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-**Compilado y mantenido por mí:** [Walther Curo De La Cruz]
+**Compilado y mantenido por:** [Walther Curo De La Cruz]
 
 En este repositorio proporciono binarios precompilados estables y mi guía definitiva de compilación desde cero para **ROS 2 Jazzy** en **Fedora 44**. 
 

@@ -53,6 +53,10 @@ El framework se instala en el directorio estándar de la industria. Para usarlo 
 
 *(Tip: Puedes agregar el comando anterior al final de tu archivo `~/.bashrc` para que ROS 2 esté disponible automáticamente en cada terminal nueva).*
 
+> **Nota para usuarios de Fedora (Wayland):** Fedora Workstation utiliza Wayland por defecto. El motor de renderizado 3D de RViz2 (Ogre 1.12 sobre Qt5) requiere la capa XWayland (`xcb`) para inicializar las ventanas de renderizado GLX. Exporta la siguiente variable en tu terminal (o agrégala a tu `~/.bashrc`):
+>
+>     export QT_QPA_PLATFORM=xcb
+
 **3. Prueba de Fuego:**
 Verifica que el entorno 3D y las herramientas gráficas basadas en Qt funcionan correctamente:
 
@@ -173,7 +177,7 @@ Abre tu editor de texto favorito y crea el archivo `~/rpmbuild/SPECS/ros2-jazzy.
     Source0:        ros2-jazzy-fedora44-x86_64.tar.gz
 
     AutoReqProv:    no
-    Requires:       python3-qt5 python3-qt5-devel sip qt5-qtbase-devel urdfdom-headers-devel
+    Requires:       python3-qt5 python3-qt5-devel sip qt5-qtbase-devel urdfdom-headers-devel console-bridge libXaw yaml-cpp tinyxml2 assimp pugixml poly2tri spdlog bullet opencv
 
     %description
     Binarios precompilados de ROS 2 Jazzy Jalisco. Se instala en /opt/ros/jazzy.
@@ -184,13 +188,15 @@ Abre tu editor de texto favorito y crea el archivo `~/rpmbuild/SPECS/ros2-jazzy.
     %install
     mkdir -p %{buildroot}/opt/ros/jazzy
     cp -r install/* %{buildroot}/opt/ros/jazzy/
+    find %{buildroot}/opt/ros/jazzy/bin -type f -exec sed -i -E '1s|^#\!.*python3.*|#!/usr/bin/python3|' {} +
 
     %files
     /opt/ros/jazzy/
 
     %changelog
-    * Thu Jul 23 2026 [Tu Nombre] <tu_correo@ejemplo.com> - 1.0-1
-    - Empaquetado nativo para Fedora 44 superando QA check-rpaths y mangle-shebangs
+    * Thu Jul 23 2026 Walther Curo De La Cruz - 1.0-2
+    - Inclusión de dependencias de runtime para RViz2 y librerías dinámicas del sistema
+    - Normalización de shebangs de Python hacia /usr/bin/python3
 
 **Construir el RPM evadiendo explícitamente el validador de rutas relativas locales:**
 

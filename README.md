@@ -54,7 +54,11 @@ El framework se instala en el directorio estándar `/opt/ros/jazzy`. Para usarlo
 
 > **¿Por qué `export QT_QPA_PLATFORM=xcb`?** Fedora Workstation utiliza Wayland por defecto. El motor de renderizado 3D de RViz2 (Ogre 1.12 sobre Qt5) requiere la capa XWayland (`xcb`) para inicializar correctamente las ventanas de renderizado GLX y prevenir cierres inesperados.
 >
-> *(Tip: Puedes agregar ambas líneas al final de tu archivo `~/.bashrc` para tener ROS 2 listo automáticamente en cada terminal nueva).*
+> *(Tip: Puedes agregar ambas directivas automáticamente a tu `~/.bashrc` para tener ROS 2 listo en cualquier terminal nueva):*
+> ```bash
+> echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
+> echo "export QT_QPA_PLATFORM=xcb" >> ~/.bashrc
+> ```
 
 **3. Prueba de Fuego:**
 Primero, verifica que la herramienta de línea de comandos responda correctamente:
@@ -117,9 +121,9 @@ Descargo la versión LTS (Jazzy) utilizando el manifiesto oficial de Open Roboti
 ### Fase 3: Resolución de Dependencias Nativas
 Instalo manualmente los puentes de Qt5 que confunden al diccionario de ROS en Red Hat, y excluyo paquetes problemáticos (como implementaciones comerciales de DDS).
 
-**Proveer cabeceras y bindings de Qt directamente desde los repositorios de Fedora:**
+**Proveer cabeceras y dependencias nativas directamente desde los repositorios de Fedora:**
 
-    sudo dnf install urdfdom-headers-devel python3-qt5 python3-qt5-devel sip qt5-qtbase-devel -y
+    sudo dnf install urdfdom-headers-devel python3-qt5 python3-qt5-devel sip qt5-qtbase-devel console-bridge-devel libXaw-devel yaml-cpp-devel tinyxml2-devel assimp-devel pugixml-devel poly2tri-devel spdlog-devel bullet-devel opencv-devel -y
 
 **Ejecutar rosdep ignorando excepciones:**
 
@@ -142,7 +146,7 @@ Para que los conectores de C++ a Python (`qt_gui_cpp`) compilen exitosamente fue
     export RPM_ARCH=$(uname -m)
     export RPM_PACKAGE_NAME="ros2-jazzy"
     export RPM_PACKAGE_VERSION="1.0"
-    export RPM_PACKAGE_RELEASE="1"
+    export RPM_PACKAGE_RELEASE="2"
     export RPM_OPT_FLAGS="-O2"
 
 ### Fase 6: Compilación Optimizada
@@ -150,8 +154,9 @@ Lanzamos la compilación. Utilizo `--merge-install` para crear una carpeta únic
 
     colcon build --merge-install --cmake-args -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
-Una vez finalizado, puedes crear el empaquetado portátil simple:
+Una vez finalizado, normalizamos los shebangs de Python para apuntar al sistema y empaquetamos:
 
+    find install/bin -type f -exec sed -i -E '1s|^#\!.*python3.*|#!/usr/bin/python3|' {} +
     tar -czvf ros2-jazzy-fedora44-x86_64.tar.gz install/
 
 ### Fase 7: Creación del Paquete RPM (Avanzado)

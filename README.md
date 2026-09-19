@@ -40,25 +40,28 @@ Los binarios que he distribuido en este repositorio los he compilado bajo la arq
 Para los usuarios de Fedora 44, he empaquetado ROS 2 Jazzy en un archivo RPM nativo. Diseñé este paquete para que te olvides de compilar durante horas.
 
 **1. Descargar e Instalar:**
-Descarga el archivo `ros2-jazzy-1.0-1.fc44.x86_64.rpm` desde la sección **Releases** de este repositorio y ejecútalo con `dnf`. El gestor de paquetes se encargará de instalar automáticamente las dependencias necesarias.
+Descarga el archivo `ros2-jazzy-1.0-2.fc44.x86_64.rpm` desde la sección **Releases** de este repositorio y ejecútalo con `dnf`. El gestor de paquetes se encargará de instalar automáticamente todas las dependencias necesarias:
 
-    sudo dnf install ./ros2-jazzy-1.0-1.fc44.x86_64.rpm
+    sudo dnf install ./ros2-jazzy-1.0-2.fc44.x86_64.rpm
 
 *(Alternativa: Si prefieres no instalarlo a nivel de sistema, puedes descargar el archivo `.tar.gz` de mis Releases, extraerlo en una carpeta local e instalar las dependencias manualmente).*
 
-**2. Activar ROS 2:**
-El framework se instala en el directorio estándar de la industria. Para usarlo en tu terminal actual, simplemente ejecuta:
+**2. Activar ROS 2 y Entorno Gráfico:**
+El framework se instala en el directorio estándar `/opt/ros/jazzy`. Para usarlo en tu terminal, debes cargar las variables de entorno de ROS 2 y exportar la plataforma gráfica requerida por Fedora:
 
     source /opt/ros/jazzy/setup.bash
+    export QT_QPA_PLATFORM=xcb
 
-*(Tip: Puedes agregar el comando anterior al final de tu archivo `~/.bashrc` para que ROS 2 esté disponible automáticamente en cada terminal nueva).*
-
-> **Nota para usuarios de Fedora (Wayland):** Fedora Workstation utiliza Wayland por defecto. El motor de renderizado 3D de RViz2 (Ogre 1.12 sobre Qt5) requiere la capa XWayland (`xcb`) para inicializar las ventanas de renderizado GLX. Exporta la siguiente variable en tu terminal (o agrégala a tu `~/.bashrc`):
+> **¿Por qué `export QT_QPA_PLATFORM=xcb`?** Fedora Workstation utiliza Wayland por defecto. El motor de renderizado 3D de RViz2 (Ogre 1.12 sobre Qt5) requiere la capa XWayland (`xcb`) para inicializar correctamente las ventanas de renderizado GLX y prevenir cierres inesperados.
 >
->     export QT_QPA_PLATFORM=xcb
+> *(Tip: Puedes agregar ambas líneas al final de tu archivo `~/.bashrc` para tener ROS 2 listo automáticamente en cada terminal nueva).*
 
 **3. Prueba de Fuego:**
-Verifica que el entorno 3D y las herramientas gráficas basadas en Qt funcionan correctamente:
+Primero, verifica que la herramienta de línea de comandos responda correctamente:
+
+    ros2 --help
+
+A continuación, verifica que el entorno 3D y las herramientas gráficas basadas en Qt funcionan a la perfección:
 
     rviz2
     
@@ -169,7 +172,7 @@ Abre tu editor de texto favorito y crea el archivo `~/rpmbuild/SPECS/ros2-jazzy.
 
     Name:           ros2-jazzy
     Version:        1.0
-    Release:        1%{?dist}
+    Release:        2%{?dist}
     Summary:        ROS 2 Jazzy Jalisco precompilado para Fedora 44
 
     License:        Apache-2.0

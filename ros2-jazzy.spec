@@ -3,7 +3,7 @@
 %define __brp_mangle_shebangs %{nil}
 Name:           ros2-jazzy
 Version:        1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        ROS 2 Jazzy Jalisco precompilado para Fedora 44
 
 License:        Apache-2.0
